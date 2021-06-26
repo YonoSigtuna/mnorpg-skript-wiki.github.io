@@ -2,6 +2,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>MNORPG's Skript Wiki💧</title>
+		<link rel="icon" href="image/sk_logo.png" type="image/x-icon"/>
 		<link rel="stylesheet" href="css/motd.css">
 		<link rel="stylesheet" href="css/Typeset_1.css">
 		<link rel="stylesheet" href="css/return_top.css">
@@ -48,22 +49,23 @@
 						<li><a  href="#4-3">4.3 善用DOC</a></li>
 						<li><a  href="#4-4">4.4 笔记的重要性</a></li></ul>
 						<!-- 5 -->
-						<a href="#5">5. Skript的例子分析</a><ul>
-						<li><a  href="#5-1">5.1 command with cooldown</a></li>
-						<li><a  href="#5-2">5.2 custom helmet</a></li>
-						<li><a  href="#5-3">5.3 disable weather</a></li>
-						<li><a  href="#5-4">5.4 eternal day</a></li>
-						<li><a  href="#5-5">5.5 furnace automatisation</a></li>
-						<li><a  href="#5-6">5.6 homes</a></li>
-						<li><a  href="#5-7">5.7 item command</a></li>
-						<li><a  href="#5-8">5.8 kill counter</a></li>
-						<li><a  href="#5-9">5.9 nerf endermen</a></li>
-						<li><a  href="#5-10">5.10 realistic drops</a></li>
-						<li><a  href="#5-11">5.11 simple god mode</a></li>
-						<li><a  href="#5-12">5.12 simple join and leave message</a></li>
-						<li><a  href="#5-13">5.13 imple motd</a></li>
-						<li><a  href="#5-14">5.14 teleport with compass</a></li>
-						<li><a  href="#5-15">5.15 vanilla gui</a></li></ul>
+						<a href="#5">5. Skript的官方例子分析</a><ul>
+						<li><a  href="#5">5.1 脚本命名规则</a></li>
+						<li><a  href="#5-2">5.2 command with cooldown</a></li>
+						<li><a  href="#5-3">5.3 custom helmet</a></li>
+						<li><a  href="#5-4">5.4 disable weather</a></li>
+						<li><a  href="#5-5">5.5 eternal day</a></li>
+						<li><a  href="#5-6">5.6 furnace automatisation</a></li>
+						<li><a  href="#5-7">5.7 homes</a></li>
+						<li><a  href="#5-8">5.8 item command</a></li>
+						<li><a  href="#5-9">5.9 kill counter</a></li>
+						<li><a  href="#5-10">5.10 nerf endermen</a></li>
+						<li><a  href="#5-11">5.11 realistic drops</a></li>
+						<li><a  href="#5-12">5.12 simple god mode</a></li>
+						<li><a  href="#5-13">5.13 simple join and leave message</a></li>
+						<li><a  href="#5-14">5.14 imple motd</a></li>
+						<li><a  href="#5-15">5.15 teleport with compass</a></li>
+						<li><a  href="#5-16">5.16 vanilla gui</a></li></ul>
 						<!-- 6 -->
 						<a href="#6">6. 你的第一个自定义方块</a><ul>
 						<li><a  href="#6">6.1 非功能性方块和功能性方块的区别</a></li>
@@ -231,8 +233,660 @@ on break:
 				在我学习sk的时候,我记录不下千行的sk语句例子</br>
 				这些例子在今天,我一样会经常翻阅</br>
 				</dd>
+			<!-- 4-5 -->
+			<div class="section"><span id="4-5"></span></div>
+				<dt>"Skript的基本指令"</dt>
+				<dd>
+				<img src="images/15.png"></br>
+				以下指令你可以输入/sk查看</br>
+<div class="||"><pre>
+<span>/sk reload &lt;skript>   加载指定脚本
+/sk enable &lt;skript>   开启指定脚本
+/sk disable &lt;skript>  关闭指定脚本
+/sk update            检测更新(不需要)
+/sk info              已加载的skript插件及附属插件信息
+/sk help              这都需要我讲?
+</span></pre></div class="||">
+				</dd>
 		</div>
 	<!-- 5 -->
+		<div class="section"><span id="5"></span>
+			<h1>Skript的官方例子分析</h1>
+			<!-- 5-1 -->
+			<dt>"脚本命名规则"</dt>
+				<dd>
+				sk的加载是有序列顺序的</br>
+				<img src="images/13.png"></br>
+				<img src="images/14.png"></br>
+				优先级顺序如下:</br>
+				<code>符号>数字>字母>汉字</code></br>
+				<code>!</code>表示最低优先级(最先加载),如果要写一些function(函数)请在里边写</br>
+				第一字符含有<code>-</code>的脚本会被sk跳过加载</br>
+				已经加载的脚本,可更改文件名后再reload一下即可停用
+				或者你喜欢输入/sk disable &lt;skript>也可以</br>
+				</dd>
+			<!-- 5-2 -->
+			<div class="section"><span id="5-2"></span></div>
+				<dt>"-command with cooldown.sk"</dt>
+				<dd>
+				指令冷却</br>
+<div class="||"><pre>
+<span>command /cake:
+	description: Give the command sender some cake!
+	cooldown: 1 minute
+	cooldown message: You need to wait &l%remaining time% &rto use this command again!
+	cooldown bypass: cake.nocooldown
+	trigger:
+		if the player's inventory doesn't have space for cake:
+			send "&cYou don't have space for cake in your inventory! :("
+			cancel command cooldown 
+		else:
+			give cake to the player
+			send "Here you go!"
+</span></pre></div class="||">
+				简化一下,我们来进行初步分析</br>
+<div class="||"><pre>
+<span>command /cake:
+	cooldown: 1 minute
+	cooldown message: 剩余冷却时间%remaining time%
+	trigger:
+		if the player's inventory doesn't have space for cake:
+			send "背包满了"
+			cancel command cooldown 
+		else:
+			give cake to the player
+			send "给予蛋糕"
+
+#注册命令固定结构
+command /cake:
+	trigger:
+
+#冷却时间
+cooldown: 1 minute
+
+#冷却信息,%remaining time%是该命令里的内置变量,变量是冷却的时间
+cooldown message: 剩余冷却时间%remaining time%
+
+#判定玩家背包是否含有空位
+if the player's inventory doesn't have space for cake:
+
+#取消该命令冷却时间
+cancel command cooldown 
+</span></pre></div class="||">
+				相关进阶知识</br>
+<div class="||"><pre>
+<span>command /essentials [&lt;number>] [&lt;text>]:
+	#指令缩写
+	Aliases: /ess
+	#使用方法提示
+	usage: /ess &lt;number> &lt;text>
+	#所需权限(需要扩展)
+	Permission: Ess.all
+	#无权提示
+	Permission message: 你没有权限
+	#可执行者,主要分player和server
+	executable by: players
+	trigger:
+		send "%arg-1%,%arg-2%" to all players
+
+arg-1是第一个输入的值,类型为数值
+输入"/ess 33"结果为"33,&lt;none>"
+
+arg-2是第二个输入的值,类型为文本
+输入"/ess 33 ces"结果为"33,ces"
+
+类似的arg还有很多,例如[&lt;player>],[&lt;entity>],[&lt;timespan>]
+可以代替所有arg的是[&lt;text>],只要有字符串存在就可以转型(后面会讲)
+</span></pre></div class="||">
+				<code>注册</code>指令的方法来写sk,我是极其不推荐的</br>
+				只要被注册指令,就允许被TAB补全</br>
+				<img src="images/16.png"></br>
+				为此我推荐大家多使用以下的命令</br>
+<div class="||"><pre>
+<span>on command "/ces":
+	cancel event
+</span></pre></div class="||">
+				优点:具有很强的安全性和简洁性,玩家无法通过TAB补全找到此指令</br>
+				缺点:不可使用command /cake注册指令中的所有附属功能</br>
+				例如冷却,权限判定,arg等</br>
+				不能使用,不代表没有,你如果想也可以用if判定</br>
+				用on command "/"来写指令触发一般都为固定死的指令,像/fly,/clear,/hat</br>
+				/gamemode,/give后面有接其他内容的建议使用轻量化的command /</br>
+	      		</dd>
+		</div>
+			<!-- 5-3 -->
+			<div class="section"><span id="5-3"></span></div>
+				<dt>"-custom helmet.sk"</dt>
+				<dd>
+				自定义帽子</br>
+<div class="||"><pre>
+<span>aliases:
+	custom helmets = iron block, gold block, diamond block
+
+on inventory click:
+	inventory action is place all or nothing
+	cursor slot of player is custom helmets
+	event-slot is helmet slot of event-player
+	cancel the event
+	set {_old helmet} to helmet of player
+	set helmet of player to cursor slot of player
+	set cursor slot of player to {_old helmet}
+
+on right click:
+	tool of player is custom helmets
+	helmet of player is air
+	cancel the event
+	set helmet of player to tool of player
+	set tool of player to air
+</span></pre></div class="||">
+				简化一下,我们来进行初步分析</br>
+<div class="||"><pre>
+<span>on inventory click:
+	if clicked slot is player's helmet:
+		set {_new hat} to player's cursor slot
+		set player's helmet to {_new hat}
+		delete player's cursor slot
+		cancel event
+
+on command "/hat":
+	set player's helmet to player's held item
+</span></pre></div class="||">
+				这只是个简单的脚本,我并没有做旧帽子返回,感兴趣的可以自己试试</br>
+				<img src="images/17.gif"></br>
+				官方例子里的<code>aliases:</code>我单独拿出来讲</br>
+				<code>aliases:</code>和<code>options:</code>是同一个东西</br>
+				我拿实际例子给大家看看,大家就明白是怎么用的了</br>
+<div class="||"><pre>
+<span>第一种:
+on command "/ces":
+	cancel event
+	if player's held item is stone or grass:
+		send "你手上拿的是石头或草方块"
+
+第二种:
+aliases:
+	b = stone, grass
+on command "/ces":
+	cancel event
+	if player's held item is b:
+		send "你手上拿的是石头或草方块"
+
+第三种:
+options:
+	block: stone or grass
+on command "/ces":
+	cancel event
+	if player's held item is {@block}:
+		send "你手上拿的是石头或草方块"
+</span></pre></div class="||">
+				在使用<code>aliases:</code>进行标签命名时,请不要定义为脚本敏感词汇,例如block,entity</br>
+				特别需要注意的是<code>options:</code>下的定义标签<code>:</code>后必须有空格</br>
+				使用标签的格式必须是<code>{@xxx}</code></br>
+				我强烈建议大家多使用第三种,简洁方便直观</br>
+				</dd>
+			<!-- 5-4 -->
+			<div class="section"><span id="5-4"></span></div>
+				<dt>"-disable weather.sk"</dt>
+				<dd>
+				取消天气</br>
+<div class="||"><pre>
+<span>#天气变为下雨或打雷时:
+on weather change to rain or thunder:
+	cancel event
+</span></pre></div class="||">
+				该脚本太过于简单真没什么可讲,官方好水*1</br>
+				</dd>
+			<!-- 5-5 -->
+			<div class="section"><span id="5-5"></span></div>
+				<dt>"-eternal day.sk"</dt>
+				<dd>
+				永恒的时间</br>
+<div class="||"><pre>
+<span>#当Minecraft内时间为18:00时
+at 18:00:
+  set time to 7:00
+</span></pre></div class="||">
+				<code>at 18:00:</code>可以定义是哪个世界<code>at 18:00 in "world":</code>官方好水*2</br>
+				</dd>
+			<!-- 5-6 -->
+			<div class="section"><span id="5-6"></span></div>
+				<dt>"-furnace automatisation.sk"</dt>
+				<dd>
+				熔炉自动补充燃料</br>
+<div class="||"><pre>
+<span>options:
+	radius: 1
+
+aliases:
+	fuel = coal, coal ore, coal block, any wooden tool
+
+on smelt:
+	loop blocks in radius {@radius}:
+		loop-block is chest
+		if ore slot of block is empty:
+			loop items of types ore and log:
+				inventory of loop-block contains loop-item
+				remove loop-item from inventory of loop-block
+				set ore of event-block to loop-item
+				exit loop
+		if fuel slot of block is empty:
+			loop items in inventory of loop-block:
+				loop-item is fuel
+				remove 1 of loop-item from inventory of loop-block
+				set fuel of event-block to 1 of loop-item
+				exit loop
+		if result slot of block is not empty:
+			loop-block can hold result of event-block
+			add result of event-block to loop-block
+			clear result of event-block
+</span></pre></div class="||">
+				该脚本BUG过于多,语法太老,逻辑太乱</br>
+				我认为不适合讲给你们,等到了后面定制功能性GUI的时候我会讲</br>
+				想自己钻研的可以自己看,大概原理就是:</br>
+				loop循环熔炉旁边的箱子,如果箱子包含煤炭,转移到熔炉里</br>
+				大家请务必区分以下这2个触发式</br>
+<div class="||"><pre>
+<span>#熔炉燃料燃烧完
+on smelt:
+
+#熔炉里燃料开始燃烧
+on fuel burn:
+</span></pre></div class="||">
+				</dd>
+			<!-- 5-7 -->
+			<div class="section"><span id="5-7"></span></div>
+				<dt>"-homes.sk"</dt>
+				<dd>
+				家</br>
+<div class="||"><pre>
+<span>command /sethome &lt;string>:
+	description: Sets your home
+	permission: skript.home
+	executable by: players
+	trigger:
+		set {homes::%uuid of player%::%arg-1%} to location of player
+		message "Set your home &lt;green>%arg-1%&lt;reset> to &lt;grey>%location of player%&lt;reset>"
+
+command /delhome &lt;string>:
+	description: Deletes your home
+	permission: skript.home
+	executable by: players
+	trigger:
+		clear {homes::%uuid of player%::%arg-1%}
+		message "Deleted your home &lt;green>%arg-1%&lt;reset>"
+
+command /home &lt;string>:
+	description: Teleports yourself to your home
+	permission: skript.home
+	executable by: players
+	trigger:
+		if {homes::%uuid of player%::%arg-1%} is not set:
+			message "You have not set your home &lt;green>%arg-1%&lt;reset> yet!"
+		else:
+			teleport player to {homes::%uuid of player%::%arg-1%}
+</span></pre></div class="||">
+				老样子,简化一下,进行初步分析</br>
+<div class="||"><pre>
+<span>#设置家
+command /sethome &lt;number>:
+	trigger:
+		if arg is between 1 and 3:
+			set {home::%arg%} to player's location
+
+#返回家
+command /gohome &lt;number>:
+	trigger:
+		if arg is between 1 and 3:
+			teleport player to location at {home::%arg%}
+
+#删除家
+command /delhome &lt;number>:
+	trigger:
+		delete {home::%arg%}
+
+#家信息
+command /homeinfo:
+	trigger:
+		loop {home::*}:
+			send "家编号:%loop-index% , 坐标:%loop-value%"
+<img src="images/18.png">
+</span></pre></div class="||">
+				简化脚本里,你们将初步认识</br>
+				1. <code>局部变量</code>与<code>全局变量</code>的区别</br>
+				2. 在变量里运用变量的初步学习</br>
+				3. 复值变量的循环值<code>loop-index</code>与<code>loop-value</code>的区别</br>
+<div class="||"><pre>
+<span>#局部变量,仅能在本脚本事件中使用,由下划线"_"开头
+{_x}
+
+#全局变量,允许跨脚本使用
+{x}
+
+#复值变量,符号必须要含有双冒号"::"
+{x::*}
+</span></pre></div class="||">
+				</dd>
+			<!-- 5-8 -->
+			<div class="section"><span id="5-8"></span></div>
+				<dt>"-item command.sk"</dt>
+				<dd>
+				物品指令</br>
+<div class="||"><pre>
+<span>aliases:
+	blacklisted = TNT, bedrock, obsidian, mob spawner, lava, lava bucket
+
+command /item &lt;items>:
+	description: Give yourself some items
+	usage: /item &lt;item(s)>
+	aliases: i
+	executable by: players
+	permission: skript.give
+	trigger:
+		if player has permission "skript.give.bypassblacklist":
+			give arguments to player
+		else:
+			loop arguments:
+				if loop-item is not blacklisted:
+					give loop-item to player
+				else:
+					message "&lt;red>%loop-item%&lt;reset> is blacklisted and thus cannot be spawned"
+
+command /item2 &lt;items>:
+	description: Give yourself some items
+	usage: /item2 &lt;item(s)>
+	aliases: i2
+	executable by: players
+	permission: skript.give
+	trigger:
+		loop arguments:
+			if loop-item is enchanted:
+				if player does not have the permission "skript.give.enchanted":
+					message "You don't have permission to spawn enchanted items!"
+					stop
+			if player has permission "skript.give.%ID of loop-item%":
+				give loop-item to player
+			else:
+				message "You don't have permission to spawn &lt;red>%loop-item%&lt;reset>!"
+
+
+command /give &lt;item types> to &lt;player>:
+	description: Give someone else some items
+	usage: /give &lt;item(s)> to &lt;player>
+	permission: skript.give
+	trigger:
+		send "Giving %argument 1% to %argument 2%" to player
+		loop argument 1:
+			if player has permission "skript.give.%ID of loop-item%":
+				give loop-item to argument 2
+				send "You recieved %loop-item% from %player%" to argument 2
+			else:
+				message "&lt;red>You don't have permission to give away free &lt;red>%loop-item%&lt;reset>!"
+</span></pre></div class="||">
+				功能鱼龙混杂,不适合当例子讲</br>
+				这里pass掉,下一个</br>
+				</dd>
+		<!-- 5-9 -->
+			<div class="section"><span id="5-9"></span></div>
+				<dt>"-kill counter.sk"</dt>
+				<dd>
+				杀敌计数器</br>
+<div class="||"><pre>
+<span>on death:
+	attacker is a player
+	add 1 to {kill counter::%uuid of attacker%::kills_total}
+	add 1 to {kill counter::%uuid of attacker%::kills_session}
+	if {kill counter::%uuid of attacker%::kills_session} > {kill counter::%uuid of attacker%::kills_session_max}:
+		set {kill counter::%uuid of attacker%::kills_session_max} to {kill counter::%uuid of attacker%::kills_session}
+
+on death of player:
+	set {kill counter::%uuid of player%::kills_session} to 0
+
+command /kills:
+	executable by: players
+	trigger:
+		message "You have killed %{kill counter::%uuid of player%::kills_session}% mobs and players in this life out of %{kill counter::%uuid of player%::kills_total}% kills in total."
+		message "Your maximum kill streak is %{kill counter::%uuid of player%::kills_session_max}% kills in one life."
+</span></pre></div class="||">
+				简化脚本</br>
+<div class="||"><pre>
+<span>on death:
+  if attacker is a player:
+    set {_entity's type} to event-entity's type
+    add 1 to {kills::%{_entity's type}%}
+
+on command "/killsinfo":
+  cancel event
+  loop {kills::*}:
+    send "杀死实体:%loop-index% , 杀死次数:%loop-value%"
+</span></pre></div class="||">
+				<img src="images/19.png"></br>
+				</dd>
+		<!-- 5-10 -->
+			<div class="section"><span id="5-10"></span></div>
+				<dt>"-nerf endermen.sk"</dt>
+				<dd>
+				呆子末影人</br>
+<div class="||"><pre>
+<span>#阻止末影人拿起方块
+on enderman pickup:
+	cancel event
+
+#阻止末影人放置方块
+on enderman place:
+	cancel event
+	kill the enderman
+</span></pre></div class="||">
+				这...官方好水*3</br>
+				</dd>
+		<!-- 5-11 -->
+			<div class="section"><span id="5-11"></span></div>
+				<dt>"-realistic drops.sk"</dt>
+				<dd>
+				更加真实的掉落</br>
+<div class="||"><pre>
+<span>#破坏玻璃掉落玻璃
+on break of glass:
+	drop glass
+
+#破坏玻璃板掉落玻璃板
+on break of glass pane:
+	drop glass pane
+
+#破坏书架掉书架
+on break of bookshelf:
+	cancel event
+	set block to air
+	drop bookshelf
+</span></pre></div class="||">
+				啊...官方好水*4</br>
+				</dd>
+		<!-- 5-12 -->
+			<div class="section"><span id="5-12"></span></div>
+				<dt>"-simple god mode"</dt>
+				<dd>
+				简单的无敌模式</br>
+<div class="||"><pre>
+<span>#当玩家拥有skript.god时阻止死亡事件
+on damage:
+	victim is a player
+	victim has permission "skript.god"
+	cancel event
+</span></pre></div class="||">
+				我很讨厌触发式不带冒号的省略写法...让我们优化一下,官方好水*5</br>
+<div class="||"><pre>
+<span>#当玩家拥有skript.god时阻止死亡事件
+on damage:
+	if victim is a player:
+		if victim has permission "skript.god":
+			cancel event
+</span></pre></div class="||">
+				</dd>
+		<!-- 5-13 -->
+			<div class="section"><span id="5-13"></span></div>
+				<dt>"-simple join and leave message.sk"</dt>
+				<dd>
+				简单的加入信息修改和离开信息修改</br>
+<div class="||"><pre>
+<span>command /set &lt;string> message &lt;string>:
+	permission: skript.set.join_message
+	description: Sets message when player joins
+	trigger:
+		if argument-1 is "join" or "leave":
+			set {custom messages::%argument-1%} to argument-2
+			message "Set the %argument-1% message to '%argument-2%&lt;reset>'"
+		else:
+			message "Only 'join' and 'leave' messages are available here."
+
+command /show &lt;string> message:
+	description: Displays the message of the day
+	trigger:
+		if {custom messages::%argument%} is set:
+			message {custom messages::%argument%}
+		else:
+			message "Only 'join' and 'leave' messages are available here."
+
+on join:
+	set join message to {custom messages::join}
+
+on quit:
+	set leave message to {custom messages::leave}
+</span></pre></div class="||">
+				优化优化,官方好水*6</br>
+<div class="||"><pre>
+<span>#加入游戏时触发
+on join:
+	set join message to "%player%加入了游戏"
+
+#离开游戏时触发
+on quit:
+	set leave message to "%player%离开了游戏"
+
+#关闭加入提示和离开提示
+on join:
+	set join message to ""
+on quit:
+	set leave message to ""
+</span></pre></div class="||">
+				</dd>
+		<!-- 5-14 -->
+			<div class="section"><span id="5-14"></span></div>
+				<dt>"-simple motd.sk"</dt>
+				<dd>
+				简单的motd信息</br>
+<div class="||"><pre>
+<span>command /setmotd &lt;text>:
+	permission: skript.setmotd
+	description: Sets the message of the day
+	trigger:
+		message "Set the MOTD to '%argument%&lt;reset>'"
+		set {motd} to argument
+
+command /showmotd:
+	description: Displays the message of the day
+	trigger:
+		message {motd}
+
+on join:
+	message {motd}
+</span></pre></div class="||">
+				我认为该例子并不是motd的例子,只是个进入游戏的提示,跟上一个例子是一样的...官方好水*6</br>
+				要更改motd请去服务器根目录下修改<code>server.properties</code>里的<code>motd=</code></br>
+				</dd>
+		<!-- 5-15 -->
+			<div class="section"><span id="5-15"></span></div>
+				<dt>"-teleport with compass.sk"</dt>
+				<dd>
+				指南针传送</br>
+<div class="||"><pre>
+<span>on rightclick with compass:
+	loop blocks above targeted block:
+	teleport player to loop-block
+	stop trigger
+</span></pre></div class="||">
+				<img src="images/20.gif"></br>
+				亲测该脚本存在严重的BUG,官方没有设计好传送的点,传送朝向也存在问题,以下是优化过的</br>
+<div class="||"><pre>
+<span>on rightclick with compass:
+	set {_loc} to location 0.5 above the block at target block's location
+	set pitch of {_loc} to player's location's pitch
+	set yaw of {_loc} to player's location's yaw
+	teleport player to {_loc}
+</span></pre></div class="||">
+				<img src="images/21.gif"></br>
+				相关知识点:<code>pitch俯仰角</code>,<code>yaw偏航角</code></br>
+				pitch俯仰角<img src="images/22.gif"></br>
+				yaw俯仰角<img src="images/23.gif"></br>
+				roll横滚角<img src="images/24.gif"></br>
+				什么？你说Minecraft没有横滚角？</br>
+				Minecraft现今还不存在可以直接利用的横滚角,但是硬要说存在的,还是有例子的</br>
+				<img src="images/25.gif"></br>
+				</dd>
+		<!-- 5-16 -->
+			<div class="section"><span id="5-16"></span></div>
+				<dt>"-vanilla gui.sk"</dt>
+				<dd>
+				普通的GUI</br>
+<div class="||"><pre>
+<span>command /gui:
+	trigger:
+		set {_gui} to a new chest inventory with 6 row with name "Gui Test"
+		set slot 0 of {_gui} to stone
+		open {_gui} to player
+ 
+on inventory click:
+	if name of event-inventory is "Gui Test":
+		if index of event-slot = 0:
+			cancel event
+			send "You clicked on the slot 0 !"
+</span></pre></div class="||">
+				最后一次优化</br>
+<div class="||"><pre>
+<span>on command "/gui":
+	cancel event
+	open chest inventory with 4 row named "普通的GUI" to player
+	format gui slot 0 of player with paper named "点击我试试？"
+
+on inventory click:
+	if inv name of player's current inventory is "普通的GUI":
+		if clicked slot is 0:
+			send "你点击的slot为0"
+</span></pre></div class="||">
+				<img src="images/26.gif"></br>
+				Skript的GUI领域是一块独立的领域,它的语法五花八门</br>
+				相关的例子可以去Sk Hub上找到很多很多</br>
+				</dd>
+		<!-- 5-17 -->
+			<div class="section"><span id="5-17"></span></div>
+				<dt>"分析总结"</dt>
+				<dd>
+				大家知道我为什么要优化官方的例子吗？</br>
+				每个人的sk编写风格是不一样的,我们如果要研究别人的东西</br>
+				都先要转换成我们自己看得懂的语法结构,然后再进一步分析逻辑</br>
+				sk的学习本身就是个无数做笔记,无数翻例子的过程</br>
+				sk过于简单,至今为止就没有个系统化学习的wiki</br>
+				包括本wiki里,也并不是像Java学习那般有系统化</br>
+				sk的灵活性就摆在这,都是通过分析无数例子长时间潜移默化就会的</br>
+				</dd>
+
+
+
+		</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<!-- 6 -->
 		<div class="section"><span id="6"></span>
 			<h1>你的第一个自定义方块</h1>
@@ -353,6 +1007,19 @@ fixed      固定材质,方块固定使用一个选定的材质
 				进入游戏用铁砧给木桶命名为ces</br>
 				便可以得到以下方块</br>
 				<img src="images/12.png"></br>
+				<code>第五步:</code></br>
+				编写一个sk来禁止打开容器,原理:判定nbt</br>
+<div class="||"><pre>
+<span>on right click:
+	set {_nbt} to tag "CustomName" of nbt of event-block
+	if {_nbt} contain "ces":
+		cancel event
+
+右键触发:
+	设置变量{_nbt}为目标方块nbt的"CustomName"部分
+	如果变量{_nbt}包含"ces"字符:
+		取消事件
+</span></pre></div class="||">
 				</dd>
 
 
