@@ -82,7 +82,7 @@
       patchToc($("ul.globaltoc"), 1);
     } else {
       // Remove Global TOC.
-      $(".globaltoc-container").remove();
+      $(".globaltoc-container").remove()
     }
 
     // Local TOC.

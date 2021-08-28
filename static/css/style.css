@@ -1,0 +1,207 @@
+html{
+	font-family: "Microsoft Yahei", Tahoma;
+}
+body{
+	margin: 0;
+	font-size: 16px;
+	text-rendering: optimizeLegibility;
+	line-height: 1.4;
+}
+nav{
+	position: fixed;
+	height: 102%;
+	width: 20%;
+	top: 0;
+	left: 0;
+	overflow-y: auto;
+	font-size: 100%;
+	font-weight: bold;
+	background-color: #F8F8F8;
+	z-index: 1;
+}
+nav ul{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+nav ul li{
+	padding: 10px 0 0px 10px;
+	display: block;
+}
+nav ul li li{
+	padding-left: 20px;
+}
+nav a{
+	font-size: 14px;
+	color: #364149;
+	font-weight: normal;
+	padding: 10px 0;
+	border-bottom: 0;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	position: relative;
+	text-decoration:none;
+	margin: 0 0 0 5px; 
+	height:100%; width:95%;
+	padding: 6px 2px 6px 0px;
+}
+footer#sign{
+	height: 1.8em;
+	width: 7em;
+	display:block;
+	position:fixed;
+	bottom:0;
+	left:0;
+	z-index: -1;
+}
+footer#options{
+	height: 49.25em;
+	width: 1%;
+	display:block;
+	position:fixed;
+	bottom:0;
+	left: 21.75%;	
+	font-size: 100%;
+	font-weight: bold;
+	cursor:pointer;
+}
+footer#options div{
+	color:white;
+	text-align: center;
+	height: 40px;
+	width: 40px;
+	float: right;
+	margin-left: 2px;
+}
+div#main_part{
+	width: 80%;
+	float: right;
+	z-index: 10;
+}
+article{
+	margin: 2em 3em;
+}
+h1, h2, h3, h4, h5, h6{
+	font-family: verdana, 黑体;
+}
+h1{
+	border-bottom: 2px solid grey;
+	padding:30px 0 5px;
+}
+h2{
+	font-size: 120%;
+}
+h3{
+	font-size: 110%;
+	display: inline;
+}
+h4{
+	font-size: 20px;
+	color: #444 !important;
+}
+p{
+	text-indent: 2em;
+}
+p.ex{
+	text-indent: 0em;
+}
+p.ex:before{ 
+	content:"例 ";
+	font-weight: bold;
+}
+p.noindent{
+	text-indent: 0em;
+}
+ul.link{
+	border-left: 8px solid rosybrown;
+	background-color: lightcyan;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+article a{
+	text-decoration:none;
+	color: hsl(220, 50%, 50%);
+}
+article a:hover{
+	text-decoration: underline;
+}
+a:hover{
+	color: #4183c4;
+}
+a.wiki:after{
+	content: " - Minecraft Wiki，最详细的官方我的世界百科"
+}
+a.wikien:after{
+	content: " - Official Minecraft Wiki"
+}
+abbr{
+	cursor:help;
+}
+em{
+	font-style:italic;
+}
+figure{
+	text-align:center;
+	text-indent: 0;
+}
+figcaption{
+	font-family: Consolas, 黑体, "Liberation Mono", Menlo, monospace, Courier;
+}
+figure img{
+	border: 2px solid hsl(40,40%,20%);
+}
+code{
+	font-weight: normal;
+	font-size: 100%;
+	font-family: Consolas, 黑体, "Liberation Mono", Menlo, monospace, Courier;
+	background-color: #D1CACC;
+}
+th code{
+	background-color: #505050;
+}
+pre{
+	color: black;
+	font-weight: normal;
+	font-size: 100%;
+	background-color: #ddd;
+	padding: 8px 10px;
+	font-family: Consolas, 黑体, "Liberation Mono", Menlo, monospace, Courier;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+pre.file{
+	background-color: #c0c0c0;
+	margin-bottom: 0;
+}
+pre.file + pre{
+	margin-top: 0;
+}
+pre span.comment{
+	color: rgb(0,129,0);
+}
+i{
+	color: #707000;
+	font-style: normal;
+}
+table{
+	margin: 20px 0px;
+	border-collapse:collapse;
+}
+th, td{
+	border: 1px solid #aaa;
+	padding: 0.2em 0.4em;
+	vertical-align: middle;
+}
+thead th{
+	background: #505050;
+	font-weight: bold;
+	color: white;
+}
+tbody th{
+	background-color: #d0d0d0;
+}
+table.nmsp{
+
+}
