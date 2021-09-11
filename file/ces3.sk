@@ -1,0 +1,175 @@
+
+options:
+  space: "                                                                                                                                                                                                                "
+
+on command "/ces2":
+  cancel event
+  set {_} to rgb(120, 30, 45)
+  send "%{_}%233"
+
+
+command /ces2 [<number>]:
+  trigger:
+    set custom model data of player's tool to arg
+
+on command "/ces":
+  cancel event
+  spawn_entity(0 , player's location)
+  
+
+options:
+  hit box nbt: "{NoAI:1b,Size:1,Invulnerable:1b}"
+  armor stand nbt: ""
+
+function spawn_entity(n:number , loc:location):
+  #碰撞箱生成
+  set {_hit box::*} to yaml nodes "%{_n}%.pivot.hit box" from file "plugins/Skript/scripts/[J] JSON to GEO/[E] Entities/Entity.yml"
+  set {_1st pivot} to yaml value "%{_n}%.pivot.hit box.0" from file "plugins/Skript/scripts/[J] JSON to GEO/[E] Entities/Entity.yml"
+  #第一个碰撞箱加载
+  execute server command "/summon slime %location_change({_loc})% %{@hit box nbt}%"
+  #其他碰撞箱生成
+  loop {_hit box::*}:
+    if loop-value parsed as number != 0:
+      set {_pivot} to yaml value "%{_n}%.pivot.hit box.%loop-value%" from file "plugins/Skript/scripts/[J] JSON to GEO/[E] Entities/Entity.yml"
+      #B-A
+      set {_move value} to X_Y_Z_2("%{_1st pivot}%","%{_pivot}%")
+      #A+B*C
+      set {_new loc} to X_Y_Z_3("%location_change_2({_loc})%","%{_move value}%",0.0625)
+      set {_new loc} to location_change_3({_new loc})
+      execute server command "/summon slime %{_new loc}% %{@hit box nbt}%"
+  #模型生成
+  set {_part model::*} to yaml nodes "%{_n}%.pivot" from file "plugins/Skript/scripts/[J] JSON to GEO/[E] Entities/Entity.yml"
+  loop {_part model::*}:
+    if loop-value is not "hit box":
+      set {_part model pivot} to yaml value "%{_n}%.pivot.%loop-value%" from file "plugins/Skript/scripts/[J] JSON to GEO/[E] Entities/Entity.yml"
+      set {_move value} to X_Y_Z_2("%{_1st pivot}%","%{_part model pivot}%")
+
+
+
+
+#做方块模型引导解决
+
+
+      #默认
+      #set {_new loc} to location_change({_loc})
+
+      # set {_new loc} to X_Y_Z("%location_change_2({_loc})%","+0.3125,-0.875,0")
+      # set {_new loc} to X_Y_Z_3("%{_new loc}%","%{_move value}%",0.0625)
+      # set {_new loc} to location_change_3({_new loc})
+      # send "%{_new loc}%" to all players
+      # set {_} to yaml value "%{_n}%.custom model data.%loop-value%" from file "plugins/Skript/scripts/[J] JSON to GEO/[E] Entities/Entity.yml"
+      # execute server command "/summon armor_stand %{_new loc}% {NoGravity:1b,HandItems:[{id:""lapis_lazuli"",tag:{CustomModelData:%{_}%},Count:1b}],ShowArms:1,Rotation:[180f],Pose:{RightArm:[0f,0f,0f]}}"
+
+      
+
+
+
+
+
+
+
+
+
+
+on right click:
+  if custom model data of player's held item = 3:
+    set {_gui} to chest inventory with 1 row with name "Earth Man NPC%{@space}%,moveable:false||click:false"
+    set slot 0 of {_gui} to armor stand with name "&x&9&F&F&F&7&2All Entities"
+    set slot 6 of {_gui} to emerald with name "&rReload Entities"
+    set slot 7 of {_gui} to emerald with custom model data 1 with name "&rJSON to GEO"
+    set slot 8 of {_gui} to emerald with custom model data 2 with name "&rJSON split"
+    open {_gui} to player
+
+on inventory click:
+  if system_gui(player,"All Entities") is true:
+    if event-item's name is "&r0":
+      stop
+      
+
+on inventory click:
+  if system_gui(player,"Earth Man NPC") is true:
+    if event-item's name is "&x&9&F&F&F&7&2All Entities":
+      set {_gui} to chest inventory with 1 row with name "All Entities%{@space}%,moveable:false||click:false"
+      set slot 0 of {_gui} to emerald with custom model data 4 with name "&r0"
+      open {_gui} to player
+    #JSON to GEO
+    if event-item's name contain "JSON to GEO":
+      if file "plugins/Skript/scripts/[J] JSON to GEO/model.json" exists:
+        if file "plugins/Skript/scripts/[J] JSON to GEO/运算数据.yml" exists:
+          delete file "plugins/Skript/scripts/[J] JSON to GEO/运算数据.yml"
+        json_group_datas_to_yaml()
+        json_cube_datas_to_yaml()
+        json_datas_to_geo_datas()
+        yaml_group_to_geo_group()
+        yaml_cube_to_geo_cube()
+        geo_model_adjust()
+        send "&cJSON to GEO over"
+    #JSON split
+    if event-item's name contain "JSON split":
+      if file "plugins/Skript/scripts/[J] JSON to GEO/model.json" exists:
+        if file "plugins/Skript/scripts/[J] JSON to GEO/运算数据.yml" exists:
+          delete file "plugins/Skript/scripts/[J] JSON to GEO/运算数据.yml"
+        json_model_write_cube_name()
+        json_model_write_texture()
+        json_model_re_write_cube_number()
+        json_model_split_group()
+        json_model_children_number_to_yaml()
+        json_model_cube_move_split_json()
+        json_mode_adjust()
+        json_cube_texture_move()
+        json_model_re_adjust_cube_number()
+        json_datas_to_split_datas()
+        json_translation_give()
+        send "&cJSON split over"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+on slime split:
+  cancel event
+
+
+
+
+
+
+
+
+
+
+
+
+
+
