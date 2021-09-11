@@ -1,807 +1,442 @@
 <html>
 	<head>
-		<meta charset="UTF-8" />
+		<meta charset="utf-8">
 		<title>MNORPG's Skript Wiki💧</title>
-		<link rel="icon" href="image/sk_logo.png" type="image/x-icon"/>
-		<link rel="stylesheet" href="css/motd.css">
-		<link rel="stylesheet" href="css/Typeset_1.css">
-		<link rel="stylesheet" href="css/return_top.css">
-		<script src="js/list_1.js"></script>
-		<script src="js/list_2.js"></script>
-	</head>
-	<body>
-	<!-- 主标题 -->
-		<div id="navbar" class="navbar navbar-default navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="https://space.bilibili.com/73665146/channel/detail?cid=157236">&nbsp;A Minecraft MNORPG Server</a>
-				</div>
-					<ul class="nav navbar-nav">
-					<li><a href="https://mineplugin.org/Skript">Skript Wiki</a></li>
-					<li><a href="https://skripthub.net/docs/">Skript Hub</a></li>
-					<li><a href="https://docs.skunity.com/">Skript Unity</a></li>
-					<li><a href="http://en.njol.ch/projects/skript/doc/events">Skript:Events</a></li>
-					<li><a>不同版本语法略有不同,请自行查阅Skript Hub</a></li>
-					<li><a href="https://qm.qq.com/cgi-bin/qm/qr?k=-oJHAk8hQzbcIW0yPUMLDcKkUwUaXPI8&jump_from=webapi">QQ群127629029</a></li>
-			</div>
-		</div>
-	<!-- 目录列表 -->
-		<div class="container">
-			<div class="col-md-3">
-				<div id="sidebar" class="bs-sidenav" role="complementary"><ul>
-					<li>
-						<!-- 5 -->
-						<a href="#5">5. Skript的官方例子分析</a><ul>
-						<li><a  href="#5">5.1 脚本命名规则</a></li>
-						<li><a  href="#5-2">5.2 command with cooldown</a></li>
-						<li><a  href="#5-3">5.3 custom helmet</a></li>
-						<li><a  href="#5-4">5.4 disable weather</a></li>
-						<li><a  href="#5-5">5.5 eternal day</a></li>
-						<li><a  href="#5-6">5.6 furnace automatisation</a></li>
-						<li><a  href="#5-7">5.7 homes</a></li>
-						<li><a  href="#5-8">5.8 item command</a></li>
-						<li><a  href="#5-9">5.9 kill counter</a></li>
-						<li><a  href="#5-10">5.10 nerf endermen</a></li>
-						<li><a  href="#5-11">5.11 realistic drops</a></li>
-						<li><a  href="#5-12">5.12 simple god mode</a></li>
-						<li><a  href="#5-13">5.13 simple join and leave message</a></li>
-						<li><a  href="#5-14">5.14 imple motd</a></li>
-						<li><a  href="#5-15">5.15 teleport with compass</a></li>
-						<li><a  href="#5-16">5.16 vanilla gui</a></li></ul>
-						</ul>
-					</li>
-				</ul>
-				</div>
-			</div>
-	<!-- 内容 -->
-	<!-- 5 -->
-		<div class="section"><span id="5"></span>
-			<h1>Skript的官方例子分析</h1>
-			<!-- 5-1 -->
-			<dt>"脚本命名规则"</dt>
-				<dd>
-				sk的加载是有序列顺序的</br>
-				<img src="images/13.png"></br>
-				<img src="images/14.png"></br>
-				优先级顺序如下:</br>
-				<code>符号>数字>字母>汉字</code></br>
-				<code>!</code>表示最低优先级(最先加载),如果要写一些function(函数)请在里边写</br>
-				第一字符含有<code>-</code>的脚本会被sk跳过加载</br>
-				已经加载的脚本,可更改文件名后再reload一下即可停用
-				或者你喜欢输入/sk disable &lt;skript>也可以</br>
-				</dd>
-			<!-- 5-2 -->
-			<div class="section"><span id="5-2"></span></div>
-				<dt>"-command with cooldown.sk"</dt>
-				<dd>
-				指令冷却</br>
-<div class="||"><pre>
-<span>command /cake:
-	description: Give the command sender some cake!
-	cooldown: 1 minute
-	cooldown message: You need to wait &l%remaining time% &rto use this command again!
-	cooldown bypass: cake.nocooldown
-	trigger:
-		if the player's inventory doesn't have space for cake:
-			send "&cYou don't have space for cake in your inventory! :("
-			cancel command cooldown 
-		else:
-			give cake to the player
-			send "Here you go!"
-</span></pre></div class="||">
-				简化一下,我们来进行初步分析</br>
-<div class="||"><pre>
-<span>command /cake:
-	cooldown: 1 minute
-	cooldown message: 剩余冷却时间%remaining time%
-	trigger:
-		if the player's inventory doesn't have space for cake:
-			send "背包满了"
-			cancel command cooldown 
-		else:
-			give cake to the player
-			send "给予蛋糕"
-
-#注册命令固定结构
-command /cake:
-	trigger:
-
-#冷却时间
-cooldown: 1 minute
-
-#冷却信息,%remaining time%是该命令里的内置变量,变量是冷却的时间
-cooldown message: 剩余冷却时间%remaining time%
-
-#判定玩家背包是否含有空位
-if the player's inventory doesn't have space for cake:
-
-#取消该命令冷却时间
-cancel command cooldown 
-</span></pre></div class="||">
-				相关进阶知识</br>
-<div class="||"><pre>
-<span>command /essentials [&lt;number>] [&lt;text>]:
-	#指令缩写
-	Aliases: /ess
-	#使用方法提示
-	usage: /ess &lt;number> &lt;text>
-	#所需权限(需要扩展)
-	Permission: Ess.all
-	#无权提示
-	Permission message: 你没有权限
-	#可执行者,主要分player和server
-	executable by: players
-	trigger:
-		send "%arg-1%,%arg-2%" to all players
-
-arg-1是第一个输入的值,类型为数值
-输入"/ess 33"结果为"33,&lt;none>"
-
-arg-2是第二个输入的值,类型为文本
-输入"/ess 33 ces"结果为"33,ces"
-
-类似的arg还有很多,例如[&lt;player>],[&lt;entity>],[&lt;timespan>]
-可以代替所有arg的是[&lt;text>],只要有字符串存在就可以转型(后面会讲)
-</span></pre></div class="||">
-				<code>注册</code>指令的方法来写sk,我是极其不推荐的</br>
-				只要被注册指令,就允许被TAB补全</br>
-				<img src="images/16.png"></br>
-				为此我推荐大家多使用以下的命令</br>
-<div class="||"><pre>
-<span>on command "/ces":
-	cancel event
-</span></pre></div class="||">
-				优点:具有很强的安全性和简洁性,玩家无法通过TAB补全找到此指令</br>
-				缺点:不可使用command /cake注册指令中的所有附属功能</br>
-				例如冷却,权限判定,arg等</br>
-				不能使用,不代表没有,你如果想也可以用if判定</br>
-				用on command "/"来写指令触发一般都为固定死的指令,像/fly,/clear,/hat</br>
-				/gamemode,/give后面有接其他内容的建议使用轻量化的command /</br>
-	      		</dd>
-		</div>
-			<!-- 5-3 -->
-			<div class="section"><span id="5-3"></span></div>
-				<dt>"-custom helmet.sk"</dt>
-				<dd>
-				自定义帽子</br>
-<div class="||"><pre>
-<span>aliases:
-	custom helmets = iron block, gold block, diamond block
-
-on inventory click:
-	inventory action is place all or nothing
-	cursor slot of player is custom helmets
-	event-slot is helmet slot of event-player
-	cancel the event
-	set {_old helmet} to helmet of player
-	set helmet of player to cursor slot of player
-	set cursor slot of player to {_old helmet}
-
-on right click:
-	tool of player is custom helmets
-	helmet of player is air
-	cancel the event
-	set helmet of player to tool of player
-	set tool of player to air
-</span></pre></div class="||">
-				简化一下,我们来进行初步分析</br>
-<div class="||"><pre>
-<span>on inventory click:
-	if clicked slot is player's helmet:
-		set {_new hat} to player's cursor slot
-		set player's helmet to {_new hat}
-		delete player's cursor slot
-		cancel event
-
-on command "/hat":
-	set player's helmet to player's held item
-</span></pre></div class="||">
-				这只是个简单的脚本,我并没有做旧帽子返回,感兴趣的可以自己试试</br>
-				<img src="images/17.gif"></br>
-				官方例子里的<code>aliases:</code>我单独拿出来讲</br>
-				<code>aliases:</code>和<code>options:</code>是同一个东西</br>
-				我拿实际例子给大家看看,大家就明白是怎么用的了</br>
-<div class="||"><pre>
-<span>第一种:
-on command "/ces":
-	cancel event
-	if player's held item is stone or grass:
-		send "你手上拿的是石头或草方块"
-
-第二种:
-aliases:
-	b = stone, grass
-on command "/ces":
-	cancel event
-	if player's held item is b:
-		send "你手上拿的是石头或草方块"
-
-第三种:
-options:
-	block: stone or grass
-on command "/ces":
-	cancel event
-	if player's held item is {@block}:
-		send "你手上拿的是石头或草方块"
-</span></pre></div class="||">
-				在使用<code>aliases:</code>进行标签命名时,请不要定义为脚本敏感词汇,例如block,entity</br>
-				特别需要注意的是<code>options:</code>下的定义标签<code>:</code>后必须有空格</br>
-				使用标签的格式必须是<code>{@xxx}</code></br>
-				我强烈建议大家多使用第三种,简洁方便直观</br>
-				</dd>
-			<!-- 5-4 -->
-			<div class="section"><span id="5-4"></span></div>
-				<dt>"-disable weather.sk"</dt>
-				<dd>
-				取消天气</br>
-<div class="||"><pre>
-<span>#天气变为下雨或打雷时:
-on weather change to rain or thunder:
-	cancel event
-</span></pre></div class="||">
-				该脚本太过于简单真没什么可讲,官方好水*1</br>
-				</dd>
-			<!-- 5-5 -->
-			<div class="section"><span id="5-5"></span></div>
-				<dt>"-eternal day.sk"</dt>
-				<dd>
-				永恒的时间</br>
-<div class="||"><pre>
-<span>#当Minecraft内时间为18:00时
-at 18:00:
-  set time to 7:00
-</span></pre></div class="||">
-				<code>at 18:00:</code>可以定义是哪个世界<code>at 18:00 in "world":</code>官方好水*2</br>
-				</dd>
-			<!-- 5-6 -->
-			<div class="section"><span id="5-6"></span></div>
-				<dt>"-furnace automatisation.sk"</dt>
-				<dd>
-				熔炉自动补充燃料</br>
-<div class="||"><pre>
-<span>options:
-	radius: 1
-
-aliases:
-	fuel = coal, coal ore, coal block, any wooden tool
-
-on smelt:
-	loop blocks in radius {@radius}:
-		loop-block is chest
-		if ore slot of block is empty:
-			loop items of types ore and log:
-				inventory of loop-block contains loop-item
-				remove loop-item from inventory of loop-block
-				set ore of event-block to loop-item
-				exit loop
-		if fuel slot of block is empty:
-			loop items in inventory of loop-block:
-				loop-item is fuel
-				remove 1 of loop-item from inventory of loop-block
-				set fuel of event-block to 1 of loop-item
-				exit loop
-		if result slot of block is not empty:
-			loop-block can hold result of event-block
-			add result of event-block to loop-block
-			clear result of event-block
-</span></pre></div class="||">
-				该脚本BUG过于多,语法太老,逻辑太乱</br>
-				我认为不适合讲给你们,等到了后面定制功能性GUI的时候我会讲</br>
-				想自己钻研的可以自己看,大概原理就是:</br>
-				loop循环熔炉旁边的箱子,如果箱子包含煤炭,转移到熔炉里</br>
-				大家请务必区分以下这2个触发式</br>
-<div class="||"><pre>
-<span>#熔炉燃料燃烧完
-on smelt:
-
-#熔炉里燃料开始燃烧
-on fuel burn:
-</span></pre></div class="||">
-				</dd>
-			<!-- 5-7 -->
-			<div class="section"><span id="5-7"></span></div>
-				<dt>"-homes.sk"</dt>
-				<dd>
-				家</br>
-<div class="||"><pre>
-<span>command /sethome &lt;string>:
-	description: Sets your home
-	permission: skript.home
-	executable by: players
-	trigger:
-		set {homes::%uuid of player%::%arg-1%} to location of player
-		message "Set your home &lt;green>%arg-1%&lt;reset> to &lt;grey>%location of player%&lt;reset>"
-
-command /delhome &lt;string>:
-	description: Deletes your home
-	permission: skript.home
-	executable by: players
-	trigger:
-		clear {homes::%uuid of player%::%arg-1%}
-		message "Deleted your home &lt;green>%arg-1%&lt;reset>"
-
-command /home &lt;string>:
-	description: Teleports yourself to your home
-	permission: skript.home
-	executable by: players
-	trigger:
-		if {homes::%uuid of player%::%arg-1%} is not set:
-			message "You have not set your home &lt;green>%arg-1%&lt;reset> yet!"
-		else:
-			teleport player to {homes::%uuid of player%::%arg-1%}
-</span></pre></div class="||">
-				老样子,简化一下,进行初步分析</br>
-<div class="||"><pre>
-<span>#设置家
-command /sethome &lt;number>:
-	trigger:
-		if arg is between 1 and 3:
-			set {home::%arg%} to player's location
-
-#返回家
-command /gohome &lt;number>:
-	trigger:
-		if arg is between 1 and 3:
-			teleport player to location at {home::%arg%}
-
-#删除家
-command /delhome &lt;number>:
-	trigger:
-		delete {home::%arg%}
-
-#家信息
-command /homeinfo:
-	trigger:
-		loop {home::*}:
-			send "家编号:%loop-index% , 坐标:%loop-value%"
-<img src="images/18.png">
-</span></pre></div class="||">
-				简化脚本里,你们将初步认识</br>
-				1. <code>局部变量</code>与<code>全局变量</code>的区别</br>
-				2. 在变量里运用变量的初步学习</br>
-				3. 复值变量的循环值<code>loop-index</code>与<code>loop-value</code>的区别</br>
-<div class="||"><pre>
-<span>#局部变量,仅能在本脚本事件中使用,由下划线"_"开头
-{_x}
-
-#全局变量,允许跨脚本使用
-{x}
-
-#复值变量,符号必须要含有双冒号"::"
-{x::*}
-</span></pre></div class="||">
-				</dd>
-			<!-- 5-8 -->
-			<div class="section"><span id="5-8"></span></div>
-				<dt>"-item command.sk"</dt>
-				<dd>
-				物品指令</br>
-<div class="||"><pre>
-<span>aliases:
-	blacklisted = TNT, bedrock, obsidian, mob spawner, lava, lava bucket
-
-command /item &lt;items>:
-	description: Give yourself some items
-	usage: /item &lt;item(s)>
-	aliases: i
-	executable by: players
-	permission: skript.give
-	trigger:
-		if player has permission "skript.give.bypassblacklist":
-			give arguments to player
-		else:
-			loop arguments:
-				if loop-item is not blacklisted:
-					give loop-item to player
-				else:
-					message "&lt;red>%loop-item%&lt;reset> is blacklisted and thus cannot be spawned"
-
-command /item2 &lt;items>:
-	description: Give yourself some items
-	usage: /item2 &lt;item(s)>
-	aliases: i2
-	executable by: players
-	permission: skript.give
-	trigger:
-		loop arguments:
-			if loop-item is enchanted:
-				if player does not have the permission "skript.give.enchanted":
-					message "You don't have permission to spawn enchanted items!"
-					stop
-			if player has permission "skript.give.%ID of loop-item%":
-				give loop-item to player
-			else:
-				message "You don't have permission to spawn &lt;red>%loop-item%&lt;reset>!"
-
-
-command /give &lt;item types> to &lt;player>:
-	description: Give someone else some items
-	usage: /give &lt;item(s)> to &lt;player>
-	permission: skript.give
-	trigger:
-		send "Giving %argument 1% to %argument 2%" to player
-		loop argument 1:
-			if player has permission "skript.give.%ID of loop-item%":
-				give loop-item to argument 2
-				send "You recieved %loop-item% from %player%" to argument 2
-			else:
-				message "&lt;red>You don't have permission to give away free &lt;red>%loop-item%&lt;reset>!"
-</span></pre></div class="||">
-				功能鱼龙混杂,不适合当例子讲</br>
-				这里pass掉,下一个</br>
-				</dd>
-		<!-- 5-9 -->
-			<div class="section"><span id="5-9"></span></div>
-				<dt>"-kill counter.sk"</dt>
-				<dd>
-				杀敌计数器</br>
-<div class="||"><pre>
-<span>on death:
-	attacker is a player
-	add 1 to {kill counter::%uuid of attacker%::kills_total}
-	add 1 to {kill counter::%uuid of attacker%::kills_session}
-	if {kill counter::%uuid of attacker%::kills_session} > {kill counter::%uuid of attacker%::kills_session_max}:
-		set {kill counter::%uuid of attacker%::kills_session_max} to {kill counter::%uuid of attacker%::kills_session}
-
-on death of player:
-	set {kill counter::%uuid of player%::kills_session} to 0
-
-command /kills:
-	executable by: players
-	trigger:
-		message "You have killed %{kill counter::%uuid of player%::kills_session}% mobs and players in this life out of %{kill counter::%uuid of player%::kills_total}% kills in total."
-		message "Your maximum kill streak is %{kill counter::%uuid of player%::kills_session_max}% kills in one life."
-</span></pre></div class="||">
-				简化脚本</br>
-<div class="||"><pre>
-<span>on death:
-  if attacker is a player:
-    set {_entity's type} to event-entity's type
-    add 1 to {kills::%{_entity's type}%}
-
-on command "/killsinfo":
-  cancel event
-  loop {kills::*}:
-    send "杀死实体:%loop-index% , 杀死次数:%loop-value%"
-</span></pre></div class="||">
-				<img src="images/19.png"></br>
-				</dd>
-		<!-- 5-10 -->
-			<div class="section"><span id="5-10"></span></div>
-				<dt>"-nerf endermen.sk"</dt>
-				<dd>
-				呆子末影人</br>
-<div class="||"><pre>
-<span>#阻止末影人拿起方块
-on enderman pickup:
-	cancel event
-
-#阻止末影人放置方块
-on enderman place:
-	cancel event
-	kill the enderman
-</span></pre></div class="||">
-				这...官方好水*3</br>
-				</dd>
-		<!-- 5-11 -->
-			<div class="section"><span id="5-11"></span></div>
-				<dt>"-realistic drops.sk"</dt>
-				<dd>
-				更加真实的掉落</br>
-<div class="||"><pre>
-<span>#破坏玻璃掉落玻璃
-on break of glass:
-	drop glass
-
-#破坏玻璃板掉落玻璃板
-on break of glass pane:
-	drop glass pane
-
-#破坏书架掉书架
-on break of bookshelf:
-	cancel event
-	set block to air
-	drop bookshelf
-</span></pre></div class="||">
-				啊...官方好水*4</br>
-				</dd>
-		<!-- 5-12 -->
-			<div class="section"><span id="5-12"></span></div>
-				<dt>"-simple god mode"</dt>
-				<dd>
-				简单的无敌模式</br>
-<div class="||"><pre>
-<span>#当玩家拥有skript.god时阻止死亡事件
-on damage:
-	victim is a player
-	victim has permission "skript.god"
-	cancel event
-</span></pre></div class="||">
-				我很讨厌触发式不带冒号的省略写法...让我们优化一下,官方好水*5</br>
-<div class="||"><pre>
-<span>#当玩家拥有skript.god时阻止死亡事件
-on damage:
-	if victim is a player:
-		if victim has permission "skript.god":
-			cancel event
-</span></pre></div class="||">
-				</dd>
-		<!-- 5-13 -->
-			<div class="section"><span id="5-13"></span></div>
-				<dt>"-simple join and leave message.sk"</dt>
-				<dd>
-				简单的加入信息修改和离开信息修改</br>
-<div class="||"><pre>
-<span>command /set &lt;string> message &lt;string>:
-	permission: skript.set.join_message
-	description: Sets message when player joins
-	trigger:
-		if argument-1 is "join" or "leave":
-			set {custom messages::%argument-1%} to argument-2
-			message "Set the %argument-1% message to '%argument-2%&lt;reset>'"
-		else:
-			message "Only 'join' and 'leave' messages are available here."
-
-command /show &lt;string> message:
-	description: Displays the message of the day
-	trigger:
-		if {custom messages::%argument%} is set:
-			message {custom messages::%argument%}
-		else:
-			message "Only 'join' and 'leave' messages are available here."
-
-on join:
-	set join message to {custom messages::join}
-
-on quit:
-	set leave message to {custom messages::leave}
-</span></pre></div class="||">
-				优化优化,官方好水*6</br>
-<div class="||"><pre>
-<span>#加入游戏时触发
-on join:
-	set join message to "%player%加入了游戏"
-
-#离开游戏时触发
-on quit:
-	set leave message to "%player%离开了游戏"
-
-#关闭加入提示和离开提示
-on join:
-	set join message to ""
-on quit:
-	set leave message to ""
-</span></pre></div class="||">
-				</dd>
-		<!-- 5-14 -->
-			<div class="section"><span id="5-14"></span></div>
-				<dt>"-simple motd.sk"</dt>
-				<dd>
-				简单的motd信息</br>
-<div class="||"><pre>
-<span>command /setmotd &lt;text>:
-	permission: skript.setmotd
-	description: Sets the message of the day
-	trigger:
-		message "Set the MOTD to '%argument%&lt;reset>'"
-		set {motd} to argument
-
-command /showmotd:
-	description: Displays the message of the day
-	trigger:
-		message {motd}
-
-on join:
-	message {motd}
-</span></pre></div class="||">
-				我认为该例子并不是motd的例子,只是个进入游戏的提示,跟上一个例子是一样的...官方好水*6</br>
-				要更改motd请去服务器根目录下修改<code>server.properties</code>里的<code>motd=</code></br>
-				</dd>
-		<!-- 5-15 -->
-			<div class="section"><span id="5-15"></span></div>
-				<dt>"-teleport with compass.sk"</dt>
-				<dd>
-				指南针传送</br>
-<div class="||"><pre>
-<span>on rightclick with compass:
-	loop blocks above targeted block:
-	teleport player to loop-block
-	stop trigger
-</span></pre></div class="||">
-				<img src="images/20.gif"></br>
-				亲测该脚本存在严重的BUG,官方没有设计好传送的点,传送朝向也存在问题,以下是优化过的</br>
-<div class="||"><pre>
-<span>on rightclick with compass:
-	set {_loc} to location 0.5 above the block at target block's location
-	set pitch of {_loc} to player's location's pitch
-	set yaw of {_loc} to player's location's yaw
-	teleport player to {_loc}
-</span></pre></div class="||">
-				<img src="images/21.gif"></br>
-				相关知识点:<code>pitch俯仰角</code>,<code>yaw偏航角</code></br>
-				pitch俯仰角<img src="images/22.gif"></br>
-				yaw偏航角<img src="images/23.gif"></br>
-				roll横滚角<img src="images/24.gif"></br>
-				什么？你说Minecraft没有横滚角？</br>
-				Minecraft现今还不存在可以直接利用的横滚角,但是硬要说存在的,还是有例子的</br>
-				<img src="images/25.gif"></br>
-				</dd>
-		<!-- 5-16 -->
-			<div class="section"><span id="5-16"></span></div>
-				<dt>"-vanilla gui.sk"</dt>
-				<dd>
-				普通的GUI</br>
-<div class="||"><pre>
-<span>command /gui:
-	trigger:
-		set {_gui} to a new chest inventory with 6 row with name "Gui Test"
-		set slot 0 of {_gui} to stone
-		open {_gui} to player
- 
-on inventory click:
-	if name of event-inventory is "Gui Test":
-		if index of event-slot = 0:
-			cancel event
-			send "You clicked on the slot 0 !"
-</span></pre></div class="||">
-				最后一次优化</br>
-<div class="||"><pre>
-<span>on command "/gui":
-	cancel event
-	open chest inventory with 4 row named "普通的GUI" to player
-	format gui slot 0 of player with paper named "点击我试试？"
-
-on inventory click:
-	if inv name of player's current inventory is "普通的GUI":
-		if clicked slot is 0:
-			send "你点击的slot为0"
-</span></pre></div class="||">
-				<img src="images/26.gif"></br>
-				Skript的GUI领域是一块独立的领域,它的语法五花八门</br>
-				相关的例子可以去Sk Hub上找到很多很多</br>
-				</dd>
-		<!-- 5-17 -->
-			<div class="section"><span id="5-17"></span></div>
-				<dt>"分析总结"</dt>
-				<dd>
-				大家知道我为什么要优化官方的例子吗？</br>
-				每个人的sk编写风格是不一样的,我们如果要研究别人的东西</br>
-				都先要转换成我们自己看得懂的语法结构,然后再进一步分析逻辑</br>
-				sk的学习本身就是个无数做笔记,无数翻例子的过程</br>
-				sk过于简单,至今为止就没有个系统化学习的wiki</br>
-				包括本wiki里,也并不是像Java学习那般有系统化</br>
-				sk的灵活性就摆在这,都是通过分析无数例子长时间潜移默化就会的</br>
-				</dd>
-
-
-
-		</div>
-		      		
-		</div>
-	<!-- 7 -->
-
-
-
-
-
-
-		
-		</div>
-	</div>
-		</div>
-	<!-- 7 -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		</div>
-	</div>
-	</div>
-</div>
-</div>
-	</div>
-	<!-- 浮动TOP -->
-	<div id="top">Top
-		<script type="text/javascript">
-		var nav=document.getElementById("top");
-		window.onscroll = function(){
-		    var scrollTop = document.body.scrollTop;
-			//var scrollTop = document.documentElement.scrollTop;
-		    if(scrollTop > 200){
-		        nav.className = "show";
-		    }else{
-		        nav.className = "";
-		    }
-		}
-		nav.onclick = function(){
-			document.body.scrollTop = 0;
-			//document.documentElement.scrollTop
-		}
+		<link rel="stylesheet" href="static/css/style.css">
+		<script>
+			function hidecomment(thiselement){
+				var classElements = document.getElementsByClassName('comment');
+				for (var i=0; i<classElements.length; i++) {
+					classElements[i].style.display = 'none';
+				}
+				thiselement.style.display='none';
+				thiselement.nextElementSibling.style.display='block';
+			}
+			function showcomment(thiselement){
+				var classElements = document.getElementsByClassName('comment');
+				for (var i=0; i<classElements.length; i++) {
+					classElements[i].style.display = 'inline';
+				}
+				thiselement.previousElementSibling.style.display='block';
+				thiselement.style.display='none';				
+			}
+			function content_level_1(thiselement){
+				var i;
+				var navall = document.getElementsByTagName('nav')[0].childNodes[1].getElementsByTagName('li');
+				for (i=0; i<navall.length; i++) navall[i].style.display = 'none';
+				var navsec = document.getElementsByTagName('nav')[0].childNodes[1].childNodes;
+				for (i=1; i<navsec.length; i+=2) navsec[i].style.display = 'block';
+				thiselement.style.display='none';
+				thiselement.nextElementSibling.style.display='block';
+			}
+			function content_level_2(thiselement){
+				var i,j;
+				var navall = document.getElementsByTagName('nav')[0].childNodes[1].getElementsByTagName('li');
+				for (i=0; i<navall.length; i++) {
+					navall[i].style.display = 'none';
+				}
+				var navsec = document.getElementsByTagName('nav')[0].childNodes[1].childNodes;
+				var navsubsec;
+
+				navsec[1].style.display = 'block';
+				navsec[3].style.display = 'block';
+				navsubsec = navsec[3].childNodes[2].childNodes;
+				for (j=1; j<navsubsec.length; j+=2) navsubsec[j].style.display = 'block';
+
+				for (i=5; i<navsec.length; i+=2) {
+					navsec[i].style.display = 'block';
+					if(navsec[i].childNodes.length>=2){
+						navsubsec = navsec[i].childNodes[1].childNodes;
+						for (j=1; j<navsubsec.length; j+=2) navsubsec[j].style.display = 'block';
+					}
+				}
+				thiselement.style.display='none';
+				thiselement.nextElementSibling.style.display='block';
+			}
+			function content_level_3(thiselement){
+				var i;
+				var navall = document.getElementsByTagName('nav')[0].childNodes[1].getElementsByTagName('li');
+				for (i=0; i<navall.length; i++) navall[i].style.display = 'block';
+				thiselement.style.display='none';
+				thiselement.previousElementSibling.previousElementSibling.style.display='block';
+			}
+			function loadpage(){
+				var files=document.getElementsByClassName("file");
+				for (var i=0;i<files.length;i++) {
+					files[i].onclick=function (){
+						var j=1;
+						if (this.nextElementSibling.style.display=='none') j=0;
+						if (j==1) this.nextElementSibling.style.display='none';
+						else this.nextElementSibling.style.display='block';
+					}
+				}
+			}
 		</script>
+	</head>
+
+<body>
+	<!-- 目录列表 -->
+	<nav>
+		<ul>
+			<!-- 1 -->
+			<li><a href="#1"" style="font-weight: bold; text-align: center;">1. What is MNORPG?</a><ul>
+			<li><a  href="#1.1">1.1 MNORPG在RPG游戏中的定位</a></li>
+			<li><a  href="#1.2">1.2 MNORPG第一主题 - 具现化</a></li>
+			<li><a  href="#1.3">1.3 MNORPG第二主题 - 成长</a></li></ul></li>
+			<!-- 2 -->
+			<li><a href="#2"" style="font-weight: bold; text-align: center;">2. 服务器版本的选择</a><ul>
+			<li><a  href="#2.1">2.1 游戏版本的选择</a></li>
+			<li><a  href="#2.2">2.2 服务端核心的选择</a></li></ul></li>
+			<!-- 3 -->
+			<li><a href="#3"" style="font-weight: bold; text-align: center;">3. Skript的介绍</a><ul>
+			<li><a  href="#3.1">3.1 Skript的基本结构</a></li>
+			<li><a  href="#3.2">3.2 Skript及扩展的下载</a></li></ul></li>
+			<!-- 4 -->
+			<li><a href="#4"" style="font-weight: bold; text-align: center;">4. 学习Skript需要的准备</a><ul>
+			<li><a  href="#4">4.1 Skript的定位</a></li>
+			<li><a  href="#4.2">4.2 编写工具</a></li>
+			<li><a  href="#4.3">4.3 善用DOC</a></li>
+			<li><a  href="#4.4">4.4 笔记的重要性</a></li></ul></li>
+			<!-- 5 -->
+			<li><a href="#5"" style="font-weight: bold; text-align: center;">5. Skript的例子分析</a><ul>
+			<li><a  href="#5.1">5.1 脚本命名规则</a></li>
+			<li><a  href="#5.2">5.2 command with cooldown.sk</a></li>
+			<li><a  href="#5.2">5.3 custom helmet.sk</a></li>
+			<li><a  href="#5.2">5.4 disable weather.sk</a></li>
+			<li><a  href="#5.2">5.5 eternal day.sk</a></li>
+			<li><a  href="#5.2">5.6 furnace automatisation.sk</a></li>
+			<li><a  href="#5.2">5.7 homes.sk</a></li>
+			<li><a  href="#5.2">5.8 item command.sk</a></li>
+			<li><a  href="#5.2">5.9 kill counter.sk</a></li>
+			<li><a  href="#5.2">5.10 nerf endermen.sk</a></li>
+			<li><a  href="#5.2">5.11 realistic drops.sk</a></li>
+			<li><a  href="#5.2">5.12 simple god mode.sk</a></li>
+			<li><a  href="#5.2">5.13 simple join and leave message.sk</a></li>
+			<li><a  href="#5.2">5.14 imple motd.sk</a></li>
+			<li><a  href="#5.2">5.15 teleport with compass.sk</a></li>
+			<li><a  href="#5.2">5.16 vanilla gui.sk</a></li></ul></li>
+			<!-- 6 -->
+			<li><a href="#6"" style="font-weight: bold; text-align: center;">6. 你的第一个自定义方块</a><ul>
+			<li><a  href="#6">6.1 非功能性方块和功能性方块的区别</a></li>
+			<li><a  href="#6.2">6.2 利用optifine的ctm功能自定义材质</a><ul>
+			<li><a  href="#6.2.1">6.2.1 各容器mspt对比</a></li>
+			<li><a  href="#6.2.2">6.2.2 木桶与熔炉的放置机制问题</a></li>
+			<li><a  href="#6.2.3">6.2.3 非功能性方块制作</a></li></ul>
+			<li><a  href="#6.3">6.3 原版自定义方块</a></li></ul></li>
+			<!-- 7 -->
+			<!-- 8 -->
+			<!-- 9 -->
+			<!-- 测试 -->
+			<li>
+			<a href="#X"" style="font-weight: bold; text-align: center;">多分组测试</a><ul>
+			<li><a href="#X">多分组测试1</a></li>
+			<li><a href="#X">多分组测试2</a><ul>
+			<li><a href="#X">多分组测试3</a></li></ul></li>
+			<li><a href="#X">多分组测试4</a></li>
+			</ul></li>
+		</ul>
+	</nav>
+	<!-- 内容 -->
+	<div id="main_part">
+		&emsp;&emsp;&emsp;
+		<a href=""><img src="images/sk_logo.png" style="margin:0 0 -60 0;width:5%"></a>&emsp;
+		<a href="https://mineplugin.org/Skript"><img src="images/sk_plugin_wiki_logo.png" style="margin:0 0 -60 0;width:7%"></a>&emsp;
+		<a href="https://skripthub.net/docs/"><img src="images/sk_hub_logo.png" style="margin:0 0 -60 0;width:4.2%"></a>&emsp;
+		<a href="https://docs.skunity.com"><img src="images/skunity_logo.png" style="margin:0 0 -60 0;width:5.3%"></a>&emsp;
+		<a href="http://en.njol.ch/projects/skript/doc/events"><img src="images/skript_events_logo.png" style="margin:0 0 -60 0;width:5%"></a>&emsp;
+
+
+		<article>
+		<!-- 1 -->
+		<h1 id="1">1. What is MNORPG?<a href="https://www.bilibili.com/video/BV1Mp4y1Y74H"><img src="images/bilibili_logo.png" style="width:70px;margin-right:25px;"></a></h1>
+			<!-- 1.1 -->
+			<h3 id="1.1">1.1 MNORPG在RPG游戏中的定位1</h3>
+			<p>
+			MNORPG即<code>Mavssive None Online Role-Playing Game</code>(大型非在线角色扮演游戏).
+			MNORPG的设计思路与传统MMORPG最大的区别在于,MNORPG是一个<code>不需要</code>任何玩家参与仍然可以运行的游戏.
+			如果你真想从零开发一个优秀的RPG Server,不妨好好看看该Wiki
+			</p>
+			<!-- 1.2 -->
+			<h3 id="1.2">1.2 MNORPG第一主题</h3>
+			<p>
+			<code>具现化</code>(具体实现化Concrete Realization Phenomenon)
+			在MNORPG游戏类型中,世界都必须围绕着这个运行.
+			任何一个NPC说的一句话,任何一本书记载的位置,任何一个漂流瓶记载的事情,在游戏中都必须有所体现.
+			举个例子,如果一把武器中的描述中有:该武器曾经是布鲁托铁匠使用过的,
+			那么在服务器中,就必须要有布鲁托这个NPC,即便他死了
+			</p>
+			<!-- 1.3 -->
+			<h3 id="1.3">1.3 MNORPG第二主题</h3>
+			<p>
+			<code>成长</code>(成长的故事Adolescent Story)
+			要想把MNORPG的故事写的精彩,光是固定的剧情显然是不够的.
+			每段故事如果能让NPC若有成长,这个故事就是精彩的.
+			剧本这块要下大功夫并不容易,讲好各个角色的故事非常重要
+			</p>
+		<!-- 2 -->
+		<h1 id="2">2. 服务器版本的选择<a href="https://www.bilibili.com/video/BV1Kp4y1Y72L"><img src="images/bilibili_logo.png" style="width:70px;margin-right:25px;"></a></h1>
+			<!-- 2.1 -->
+			<h3 id="2.1">2.1 游戏版本的选择</h3>
+			<p>
+			在选择版本之前,我们需要明白一个道理,该系列不沾任何服务端MOD,如果你想使用MOD来打造RPG服务器,</br>
+			那么你与该系列的无缘的(更新该WIKI时最高版本:1.18).
+			第一要确定一件事,我们要开的RPG服务器版本要选择哪一个,粗略分析以下几个原因</br>
+			<code>1:</code>
+			在1.14以下的所有版本中,所有服务器都无法避免地图光照更新产生的黑块问题.
+			尽管目前有光照更新修复等插件,诞生效果不尽人意.
+			在使用optifine的清澈水体时,没有任何一款插件能修复水底光照问题</br>
+			<code>2:</code>
+			1.14以下的版本杂且乱,1.14以下版本都无法做到超视距问题(服务器视距>10).
+			这对于RPG游戏体验是极大的破坏.</br>
+			<code>3:</code>
+			在1.13以下的版本缺少游泳动作,RPG的总体互动性会缺少一些该有的乐趣.
+			海底BOSS的设计及潜水设计.</br>
+			<code>4:</code>
+			Minecraft目前最头疼的问题,1.15以下的所有版本中优化都是极其拉跨的(包括1.12).
+			以上几个原因,我们可以得出目前相对比较适合的游戏版本是<code>1.15.2</code>
+			视频中虽然说是1.14.4,但那是以前的视频.
+			</p>
+			<!-- 2.2 -->
+			<h3 id="2.2">2.2 服务端核心的选择<a href="https://www.bilibili.com/video/BV1Kp4y1Y72L"><img src="images/bilibili_logo.png" style="width:70px;margin-right:25px"></a></h3>
+			<p>
+			这里就不详细科普各个服务端的优缺点了,在MNORPG这个需要大量运算脚本的服务器里.
+			选择一款<code>多线程处理</code>的服务端非常重要,曾经我用过Spigot来运算上百个盔甲架,已经hold不住了.
+			你可能会好奇,上百个那么多?给你打个预防针,上百个很正常
+			</p>
+		<!-- 3 -->
+		<h1 id="3">3. Skript的介绍<a href="https://www.bilibili.com/video/BV1d54y1677h"><img src="images/bilibili_logo.png" style="width:70px;margin-right:25px;"></a></h1>
+			<!-- 3.1 -->
+			<h3 id="3.1">3.1 Skript的基本结构</h3>
+			<p>
+			Skript是一个在国外非常流行的服务器插件,它允许你在不会Java语言的情况下简单的管理整个Minecraft.
+			这是用<code>触发式</code>、<code>条件式</code>和<code>表达式</code>三个部分做到的.</br>
+			&emsp;&emsp;触发器很普通,并由一些条件和效果组成,就像这个简单的掉落脚本.
+			当触发器触发,所有条件均满足,效果就会被触发,简单吧?</br>
+			&emsp;&emsp;每个服务器都能在没有自定义插件的情况下表现出属于自己的光彩这比你自己钻研插件和找人写插件快的多.
+			同时你也不需要那么多小插件了,</br>
+			这一个插件就够了,例如我服务器的所有插件,仅有Skript及扩展+MythicMobs,
+			为了方便交流,我们今后会,把skript简化成sk进行说明
+<pre>
+<span class="comment">当打破方块时:</span>
+<span class="comment">  如果方块是玻璃:</span>
+<span class="comment">    掉落玻璃:</span>
+on break:
+  if event-block is glass:
+    drop glass
+</pre>
+			</p>
+			<!-- 3.2 -->
+			<h3 id="3.2">3.2 Skript及扩展的下载</h3>
+			<p>
+			你可以在<a href="https://github.com/bensku/Skript/releases">GITHUB</a>上下载最新版本的Skript.
+			扩展如果你第一次使用sk,请不要加,等用到时再自己加,以下是几个比较实用的扩展.</br>
+			更多扩展你可以在SkHub上找到下载地址</br>
+			&emsp;&emsp;SkBee : <a href="https://www.spigotmc.org/resources/skbee-skript-addon.75839/">Download</a></br>
+			&emsp;&emsp;Skellett : <a href="https://forums.skunity.com/resources/skellett-the-beast-addon.24/">Download</a></br>
+			&emsp;&emsp;SkQuery : <a href="https://github.com/SkQuery/SkQuery/releases">Download</a></br>
+			&emsp;&emsp;skUtilities : <a href="https://forums.skunity.com/resources/skutilities.26/">Download</a></br>
+			&emsp;&emsp;TuSKe : <a href="https://github.com/Tuke-Nuke/TuSKe/releases">Download</a></br>
+			不同sk版本可以在不同的版本中运行,包括扩展也是一样的.
+			2017年的TuSKe1.8.2在2021年的今天仍然可以运行在1.16版本上</br>
+	     	</p>
+		<!-- 4 -->
+		<h1 id="4">4. 学习Skript需要的准备</h1>
+			<!-- 4.1 -->
+			<h3 id="4.1">4.1 Skript的定位</h3>
+			<p>
+			我们先来明确一下Skript在Minecraft是怎么样一种定位,
+			Skript是脚本插件,它相较于Java,更多是<code>逻辑</code>上的学习过程.</br>
+			同时它的容错率更高,格式要求也更加灵活
+			</p>
+			<!-- 4.2 -->
+			<h3 id="4.2">4.2 编写工具</h3>
+			<p>
+			sk的脚本文件非常轻量化,你可以不使用Visual Studio Code、Atom等复杂的工具.如果你有使用过VSC或其他工具,那当然是最好的.</br>
+			在初次编写sk,我建议各位试试<code>Sublime</code></br>
+			<img src="images/1.png" style="width:100%"></br>
+			在使用Sublime打开<code>.sk</code>文件时,</br>
+			点击右下角<code>纯文本</code>→<code>open all with current extension as...</code>→<code>Yaml</code>这样下次打开sk就以Yaml文本的形式打开了
+			</p>
+			<!-- 4.3 -->
+			<h3 id="4.3">4.3 善用DOC</h3>
+			<p>
+			在<a href="https://skripthub.net/docs/">https://skripthub.net/docs/</a>里,你可以找到大量的sk语法.
+			你可以在本网页的Top里找到<code>Skript Hub</code>进入并加入收藏夹.</br>
+			你前期能死磕的语法的地方只有sk hub,有大量的语法是存在例子的
+			</p>
+			<!-- 4.4 -->
+			<h3 id="4.4">4.4 笔记的重要性</h3>
+			<p>
+			之前说过了,sk是注重逻辑处理的编写语言,它没有JAVA的复杂性,所以做好相应的笔记非常重要.
+			在我学习sk的时候,我记录不下千行的sk语句例子,这些例子在今天,我一样会经常翻阅
+			<img src="images/2.png" style="width:100%">
+			</p>
+		<!-- 5 -->
+		<h1 id="5">5. Skript的官方例子分析</h1>
+			<!-- 5.1 -->
+			<h3 id="5.1">5.1 脚本命名规则</h3>
+			<p>
+			sk的加载是有序列顺序的</br>
+			<img src="images/13.png"></br>
+			<img src="images/14.png"></br>
+			优先级顺序如下:</br>
+			<code>符号>数字>字母>汉字</code></br>
+			<code>!</code>表示最低优先级(最先加载),如果要写一些function(函数)请在里边写</br>
+			第一字符含有<code>-</code>的脚本会被sk跳过加载</br>
+			已经加载的脚本,可更改文件名后再reload一下即可停用
+			或者你喜欢输入/sk disable &lt;skript>也可以</br>
+			</p>
+			<!-- 5.2 -->
+			<h3 id="5.2">5.2 例子分析</h3>
+			<p>
+			<a href="html/index.html">去老wiki查看</a>
+			</p>
+		<!-- 6 -->
+		<h1 id="6">6. 你的第一个自定义方块</h1>
+			<!-- 6.1 -->
+			<h3 id="6.1">6.1 非功能性方块和功能性方块的区别</h3>
+			<p>
+			<code>非功能性方块</code>:像石头,草方块,橡木木板这类不具备交互功能的方块,通常模型大小为1m³</br>
+			<img src="images/3.png" style="width:100%"></br>
+			<code>功能性方块</code>:像熔炉,切石机,灯笼这类<code>具有独立GUI</code>或<code>特殊模型碰撞箱</code></br>
+			<img src="images/4.png" style="width:100%"></br>
+			这也是本章会着重讲解的方块</br>
+			你可以学会自定义方块材质自定义方块模型,自定义方块碰撞箱,自定义方块GUI及功能</br>
+			本章里,你将会学习到optifine的ctm的自定义贴图,cit的自定义物品</br>
+			如果你第一次接触optifine的这些功能,可以前往<a href="https://www.mcbbs.net/thread-782790-1-1.html">https://www.mcbbs.net/thread-782790-1-1.html</a>粗略了解</br>
+			</p>
+			<!-- 6.2 -->
+			<h3 id="6.2">6.2 利用optifine的ctm功能自定义材质</h3>
+			<p>
+			例子材质包下载<a href="file/CTM例子.zip" download="CTM例子.zip">Download</a></br>
+			在游戏里用铁砧命名熔炉为<code>new_block</code>即可使用</br>
+			(只有亲自体验才能知道这篇里在讲什么)</br>
+			要想利用ctm来自定义材质,首先第一要求就是必须拥有<code>CustomName</code>这个nbt</br>
+			通过自定义某个容器的GUI名字,我们就可以用ctm来实现改方块的各面材质</br>
+			就像下图,同是熔炉,,熔炉GUI名字不同,材质也随着不同</br>
+			<img src="images/5.png" style="width:100%"></br>
+			那么第一个问题就来了,既然那么多具有GUI命名的容器方块</br>
+			如何选择最佳的那一个呢?在<a href="https://www.bilibili.com/video/BV1fX4y1K78C">BV1fX4y1K78C</a>这期视频开头里</br>
+			我对比了刷怪笼自定义方块和盔甲架自定义方块的帧数(需要说明的是那个自定义方块原理和本篇是不同的)</br>
+			视频里没有对比<code>mspt</code>(1tick需要多长时间运行,越低越好)是因为没有利用容器进行修改</br>
+			在本WIKI里我将详细对比2种自定义方块的mspt情况(请不要追求极致去用唱片机来自定义)</br>
+			</p>
+			<!-- 6.2.1 -->
+			<h3 id="6.2.1">6.2.1 各容器mspt对比<a href="https://www.bilibili.com/video/BV1HX4y1A7YL"><img src="images/bilibili_logo.png" style="width:70px;margin-right:25px;"></a></h3>
+			<p>
+			烟熏炉(smoker)30³ : mspt=8-10 fps=550/120</br>
+			&emsp;&emsp;发射器(dispenser)30³ : mspt=6-7 fps 600/260</br>
+			&emsp;&emsp;附魔台(enchantment table)30³ : mspt=5-6 fps=4/3</br>
+			&emsp;&emsp;高炉(blast furnace)30³ : mspt=7 fps=600/130</br>
+			&emsp;&emsp;漏斗(hopper)30³ : mspt=26 fps=230/150</br>
+			&emsp;&emsp;<code>木桶(barrel)</code>30³ : mspt=3-4 fps=688/200-320</br>
+			&emsp;&emsp;酿造台(brewing stand)30³ : mspt=6-7 fps=240/100</br>
+			&emsp;&emsp;潜影盒(shulker box)30³ : mspt=3-4 fps=11/10</br>
+			&emsp;&emsp;投掷器(smoker)30³ : mspt=3-4 fps=670/300</br>
+			&emsp;&emsp;箱子(chest)30³ : mspt=6-7 fps=8/7</br>
+			&emsp;&emsp;陷阱箱(trapped chest)30³ : mspt=3-4 fps=8/7</br>
+			&emsp;&emsp;<code>熔炉(furnace)</code>30³ : mspt=3-5 fps=600/140</br>
+			&emsp;&emsp;<code>盔甲架(armor stand)</code>30³ : mspt=500+ fps=0</br>
+			通过以上mspt和fps的对比,当前版本下,空的木桶的综合考虑是最优秀的</br>
+			</p>
+			<!-- 6.2.2 -->
+			<h3 id="6.2.2">6.2.2 木桶与熔炉的放置机制问题</h3>
+			<p>
+			<code>木桶</code>的放置朝向一共拥有6个,分别为上、下、左、右、前、后.在实际使用中,就拥有6种放置角度</br>
+			<img src="images/6.png" style="width:100%"></br>
+			再看看<code>熔炉</code>的放置朝向,仅有4个,分别为左、右、前、后</br>
+			<img src="images/7.png" style="width:100%"></br>
+			根据你想要做的方块选择对应的载体(木桶/熔炉)</br>
+			我建议大家选择木桶作为载体,要想禁止上下面到后面我会教用sk来阻止</br>
+			</p>
+			<!-- 6.2.3 -->
+			<h3 id="6.2.3">6.2.3 非功能性方块制作</h3>
+			<p>
+			首先准备一个方块的贴图,这里我拿工业2的核弹做演示例子</br>
+			<img src="images/8.png" style="width:100%"></br>
+			一个方块共有3个部分的贴图组成,分别是<code>top(顶部)</code>、<code>bottom(底部)</code>、<code>side(侧面)</code></br>
+			要是你使用了熔炉作为载体,则还有front(前面),不举例</br>
+			</br>
+			<code>第一步:</code></br>
+			在<code>材质包/assets/minecraft/optifine/ctm/新方块名字/</code>路径下放入刚才的3个贴图</br>
+			<img src="images/9.png" style="width:100%"></br>
+			<code>第二步:</code></br>
+			创建各个贴图对应的<code>.properties</code>文件</br>
+			<img src="images/10.png" style="width:100%"></br>
+			<code>第三步:</code></br>
+			编写.properties,填入以下信息</br>
+<pre>
+bottom.properties:
+	matchTiles=barrel_bottom
+	method=fixed
+	tiles=bottom
+	name=ces
+
+sides.properties:
+	matchTiles=barrel_side
+	method=fixed
+	tiles=sides
+	name=ces
+
+top.properties
+	matchTiles=barrel_top
+	method=fixed
+	tiles=top
+	name=ces
+</pre>
+			<img src="images/11.png" style="width:100%"></br>
+			<code>逐句分析:</code></br>
+			matchTiles=<方块各面ID></br>
+			method=ctm / horizontal / vertical / top / random / repeat / fixed</br>
+			tiles=<贴图对应.png文件></br>
+			name=&lt;GUI名字判定></br>
+			你想更深入了解CTM可以去看看<a href="https://www.mcbbs.net/thread-103270-1-1.html">https://www.mcbbs.net/thread-103270-1-1.html</a></br>
+<pre>
+method的区别
+ctm        <span class="comment">标准的连接方式,任意方向上有相同方块连接时会出现效果,这有点类似于原版中的玻璃方块</span>
+horizontal <span class="comment">水平方向连接方式,水平方向有相同方块连接时会出现效果,也就是书架的效果</span>
+vertical   <span class="comment">垂直方向连接方式,垂直方向有相同方块连接时会出现效果,可以用来做柱子的效果</span>
+top        <span class="comment">顶部连接方式,当方块上方有相同方块连接时方块本身会出现效果</span>
+random     <span class="comment">随机材质,方块随机使用数个选定的材质</span>
+repeat     <span class="comment">重复材质,方块连续使用选定的一定面积的材质</span>
+fixed      <span class="comment">固定材质,方块固定使用一个选定的材质</span>
+</pre>
+			<code>第四步:</code></br>
+			进入游戏用铁砧给木桶命名为ces</br>
+			便可以得到以下方块</br>
+			<img src="images/12.png" style="width:100%"></br>
+			<code>第五步:</code></br>
+			编写一个sk来禁止打开容器,原理:判定nbt(需要SkBee)</br>
+<pre>
+on right click:
+  set {_nbt} to tag "CustomName" of nbt of event-block
+  if {_nbt} contain "ces":
+    cancel event
+
+<span class="comment">右键触发:</span>
+<span class="comment">  设置变量{_nbt}为目标方块nbt的"CustomName"部分</span>
+<span class="comment">  如果变量{_nbt}包含"ces"字符:</span>
+<span class="comment">    取消事件</span>
+</pre>
+
+
+			</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</article>
+		<!--<figure><img src="images/12.png" height="180" width="900"></figure>-->
 	</div>
-	<!-- 底部 -->
-		</div><footer class="footer">
-		 	<div class="container">
-				<p class="pull-right">
-				  <a href="#">返回顶部</a></p>
-				<p>这是一个正在制作的网页<br>制作的人(雾) <a href="javascript:;">神树moon</a> bilibili<br></p>
-		 	</div>
-		</footer>
-	</body>
+</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
